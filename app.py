@@ -412,7 +412,7 @@ from linebot.models import (
     MessageEvent, TextMessage
 )
 import os
-import redis
+import redis, datetime
 
 #引用副程式
 import app_1_news, Msg_Template, stockprice, kchart, Technical_Analysis, Institutional_Investors
@@ -447,8 +447,10 @@ def process_text_message(event):
     if msg == '股票推薦':
         line_bot_api.push_message(ID, TextSendMessage(text='請稍等，\n資料產生中!!'))
         
-        user_type = r.get(ID)
-        res = pro_kafkaconsumer(server=server, groupid='groupid', topic='promote_stock', ID=str(user_type))  #此ID為type1(kafka內的)
+        user_type =str(r.get(ID))  
+        user_type+='_'
+        user_type+=str(datetime.datetime.now().strftime('%Y%m%d'))
+        res = pro_kafkaconsumer(server=server, groupid='groupid', topic='promote_stock', ID=user_type)  #此ID為type1(kafka內的)
         Stock_list = [i for i in eval(res[user_type]).keys()]
         Str ="股票推薦清單" + emoji_upinfo
         Str+='\n'
@@ -642,10 +644,15 @@ def process_text_message(event):
 #         btn_msg = Msg_Template.stock_reply_other(targetStock)
 #         line_bot_api.push_message(ID, btn_msg)
     
+    #功能說明
+    elif msg == '功能說明':
+        line_bot_api.reply_message(event.reply_token, \
+            TextSendMessage(text='您好～\n在此說明我的功能!\n\nK+個股代號(舉例:K2330)，\n=>會產生出2330的K線圖。\n\nN+個股代號(舉例:N2330)，\n=>會顯示近期2330的新聞連結。\n\nS+個股代號(舉例:S2330)，\n=>會顯示最近2330的\n開、高、收、低價格。\n\nMACD+個股代號(舉例:MACD2330)，\n=>會產生出2330的MACD指標圖。\n\nRSI+個股代號(舉例:RSI2330)，\n=>會產生出2330的RSI指標圖。\n\nBBAND+個股代號(舉例:BBAND2330)，\n=>會產生出2330的BBAND指標圖。\n\nP+個股代號(舉例:P2330)，\n=>會產生出2330的一年股價走勢圖。\n\nE+個股代號(舉例:E2330)，\n=>會產生出2330的年收益率分析圖。\n\nF+個股代號(舉例:F2330)，\n=>會產生出2330三大法人買賣資訊。\n\n或者點選"股票推薦"，\n推薦適合您的股票名單。\n\n功能說明完畢，\n謝謝觀看!!'))
+    
     #問候語回應
     elif msg in ("你好", "哈嘍", 'HI', 'hi', '嗨', "妳好", "您好", "Hi", "hI"):
         line_bot_api.reply_message(event.reply_token, \
-            TextSendMessage(text='您好～歡迎加入股市小子!\n下方圖文選單可以點選!\n或請輸入"功能"，\n會詳列出我的功能說明!'))
+            TextSendMessage(text='您好～歡迎加入股市小子!\n下方圖文選單可以點選!\n或請點選下方"功能說明"，\n會詳列出我的功能說明!'))
     
 
     else:
