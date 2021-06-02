@@ -46,7 +46,7 @@ tox==3.16.1
 tox-travis==0.12
 twder==0.1.4
 tzlocal==2.1
-urllib3==1.25.9
+urllib3==1.26.5
 virtualenv==20.0.25
 webencodings==0.5.1
 yfinance==0.1.54
