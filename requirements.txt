@@ -29,7 +29,7 @@ matplotlib==3.2.2
 mpl-finance==0.10.1
 mplfinance==0.12.6a3
 multitasking==0.0.9
-numpy==1.19.0
+numpy==1.22.0
 pandas==1.0.5
 pandas-datareader==0.8.1
 pluggy==0.13.1
